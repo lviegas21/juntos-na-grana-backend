@@ -1,0 +1,10 @@
+{
+  "juntosnaGranaApplicationApp": {
+    "MissionStatusType": {
+      "null": "",
+      "PENDING": "PENDING",
+      "COMPLETED": "COMPLETED",
+      "FAILED": "FAILED"
+    }
+  }
+}

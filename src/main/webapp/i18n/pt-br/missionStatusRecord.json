@@ -1,0 +1,26 @@
+{
+  "juntosnaGranaApplicationApp": {
+    "missionStatusRecord": {
+      "home": {
+        "title": "Mission Status Records",
+        "refreshListLabel": "Atualizar lista",
+        "createLabel": "Criar novo Mission Status Record",
+        "createOrEditLabel": "Criar ou editar Mission Status Record",
+        "notFound": "Nenhum Mission Status Record encontrado"
+      },
+      "created": "Um novo Mission Status Record foi criado com o identificador {{ param }}",
+      "updated": "Um Mission Status Record foi atualizado com o identificador {{ param }}",
+      "deleted": "Um Mission Status Record foi excluído com o identificador {{ param }}",
+      "delete": {
+        "question": "Tem certeza de que deseja excluir Mission Status Record {{ id }}?"
+      },
+      "detail": {
+        "title": "Mission Status Record"
+      },
+      "id": "ID",
+      "date": "Date",
+      "statusType": "Status Type",
+      "mission": "Mission"
+    }
+  }
+}

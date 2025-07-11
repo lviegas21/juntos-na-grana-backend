@@ -1,0 +1,30 @@
+{
+  "juntosnaGranaApplicationApp": {
+    "appUser": {
+      "home": {
+        "title": "App Users",
+        "refreshListLabel": "Atualizar lista",
+        "createLabel": "Criar novo App User",
+        "createOrEditLabel": "Criar ou editar App User",
+        "notFound": "Nenhum App User encontrado"
+      },
+      "created": "Um novo App User foi criado com o identificador {{ param }}",
+      "updated": "Um App User foi atualizado com o identificador {{ param }}",
+      "deleted": "Um App User foi excluído com o identificador {{ param }}",
+      "delete": {
+        "question": "Tem certeza de que deseja excluir App User {{ id }}?"
+      },
+      "detail": {
+        "title": "App User"
+      },
+      "id": "ID",
+      "username": "Username",
+      "name": "Name",
+      "avatar": "Avatar",
+      "xpPoints": "Xp Points",
+      "level": "Level",
+      "createdAt": "Created At",
+      "family": "Family"
+    }
+  }
+}

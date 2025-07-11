@@ -1,0 +1,69 @@
+{
+  "annotations": {
+    "changelogDate": "20250711140056"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "title",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "targetAmount",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "currentAmount",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "ZonedDateTime",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "dueDate",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "category",
+      "fieldType": "GoalCategory",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "ADVENTURE,SHIELD,UPGRADE,POTION,TREASURE,EQUIPMENT,OTHER"
+    },
+    {
+      "fieldName": "priority",
+      "fieldType": "GoalPriority",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "LOW,MEDIUM,HIGH"
+    },
+    {
+      "fieldName": "alertEnabled",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "alertThreshold",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "Goal",
+  "relationships": [
+    {
+      "otherEntityName": "family",
+      "relationshipName": "family",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no"
+}

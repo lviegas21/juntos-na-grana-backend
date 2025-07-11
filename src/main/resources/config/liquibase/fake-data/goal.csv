@@ -1,0 +1,11 @@
+id;title;description;target_amount;current_amount;created_at;due_date;category;priority;alert_enabled;alert_threshold;family_id
+1;gloom aside;swat outsource;20903.2;20437.21;2025-07-10T21:58:46;2025-07-10T17:16:09;UPGRADE;HIGH;true;4480;1
+2;doorpost vague;fooey normal;6854.76;16514.47;2025-07-11T13:08:12;2025-07-11T10:47:17;ADVENTURE;HIGH;false;26495;2
+3;whirlwind of inasmuch;hm gazebo lustrous;17732.76;5597.36;2025-07-11T05:10:12;2025-07-10T16:12:34;POTION;HIGH;true;15694;3
+4;incidentally;geez next;29946.75;26197.54;2025-07-11T01:17:11;2025-07-11T03:49:48;OTHER;HIGH;true;19630;4
+5;underneath boohoo colorfully;mantua closed;17642.66;31506.16;2025-07-11T06:20:17;2025-07-10T19:02:48;SHIELD;LOW;true;1411;5
+6;excitable bah redesign;psst oof;16227.17;24135.84;2025-07-10T21:36:31;2025-07-10T16:42:24;TREASURE;HIGH;true;28553;6
+7;huzzah;accidentally republican;11732.86;21282.68;2025-07-10T17:05:28;2025-07-10T16:25:37;SHIELD;HIGH;true;20477;7
+8;papa;yearly yieldingly;11897.78;26112.47;2025-07-11T01:57:04;2025-07-10T19:05:44;OTHER;LOW;false;16832;8
+9;wherever diversity;lay discourse;19096.35;7935.96;2025-07-10T18:25:54;2025-07-10T14:43:38;SHIELD;MEDIUM;false;9641;9
+10;pish soupy weakly;lest accompanist dimly;8118.52;29823.61;2025-07-11T09:54:23;2025-07-11T11:30:13;SHIELD;MEDIUM;true;28691;10

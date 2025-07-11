@@ -1,0 +1,52 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (missionStatusRecord(); as missionStatusRecordRef) {
+      <div>
+        <h2 data-cy="missionStatusRecordDetailsHeading">
+          <span jhiTranslate="juntosnaGranaApplicationApp.missionStatusRecord.detail.title">Mission Status Record</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">Código</span></dt>
+          <dd>
+            <span>{{ missionStatusRecordRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.missionStatusRecord.date">Date</span></dt>
+          <dd>
+            <span>{{ missionStatusRecordRef.date | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.missionStatusRecord.statusType">Status Type</span></dt>
+          <dd>
+            <span [jhiTranslate]="'juntosnaGranaApplicationApp.MissionStatusType.' + (missionStatusRecordRef.statusType ?? 'null')">{{
+              { null: '', PENDING: 'PENDING', COMPLETED: 'COMPLETED', FAILED: 'FAILED' }[missionStatusRecordRef.statusType ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.missionStatusRecord.mission">Mission</span></dt>
+          <dd>
+            @if (missionStatusRecord()!.mission) {
+              <div>
+                <a [routerLink]="['/daily-mission', missionStatusRecord()!.mission?.id, 'view']">{{
+                  missionStatusRecordRef.mission?.id
+                }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Voltar</span>
+        </button>
+
+        <button type="button" [routerLink]="['/mission-status-record', missionStatusRecordRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editar</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

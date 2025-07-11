@@ -1,0 +1,91 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (dailyMission(); as dailyMissionRef) {
+      <div>
+        <h2 data-cy="dailyMissionDetailsHeading">
+          <span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.detail.title">Daily Mission</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">Código</span></dt>
+          <dd>
+            <span>{{ dailyMissionRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.title">Title</span></dt>
+          <dd>
+            <span>{{ dailyMissionRef.title }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.description">Description</span></dt>
+          <dd>
+            <span>{{ dailyMissionRef.description }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.startDate">Start Date</span></dt>
+          <dd>
+            <span>{{ dailyMissionRef.startDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.endDate">End Date</span></dt>
+          <dd>
+            <span>{{ dailyMissionRef.endDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.type">Type</span></dt>
+          <dd>
+            <span [jhiTranslate]="'juntosnaGranaApplicationApp.DailyMissionType.' + (dailyMissionRef.type ?? 'null')">{{
+              { null: '', SAVING: 'SAVING', RESTRICTION: 'RESTRICTION', TRACKING: 'TRACKING', INVESTMENT: 'INVESTMENT' }[
+                dailyMissionRef.type ?? 'null'
+              ]
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.targetAmount">Target Amount</span></dt>
+          <dd>
+            <span>{{ dailyMissionRef.targetAmount }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.category">Category</span></dt>
+          <dd>
+            <span [jhiTranslate]="'juntosnaGranaApplicationApp.GoalCategory.' + (dailyMissionRef.category ?? 'null')">{{
+              {
+                null: '',
+                ADVENTURE: 'ADVENTURE',
+                SHIELD: 'SHIELD',
+                UPGRADE: 'UPGRADE',
+                POTION: 'POTION',
+                TREASURE: 'TREASURE',
+                EQUIPMENT: 'EQUIPMENT',
+                OTHER: 'OTHER',
+              }[dailyMissionRef.category ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.xpReward">Xp Reward</span></dt>
+          <dd>
+            <span>{{ dailyMissionRef.xpReward }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.createdAt">Created At</span></dt>
+          <dd>
+            <span>{{ dailyMissionRef.createdAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.family">Family</span></dt>
+          <dd>
+            @if (dailyMission()!.family) {
+              <div>
+                <a [routerLink]="['/family', dailyMission()!.family?.id, 'view']">{{ dailyMissionRef.family?.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Voltar</span>
+        </button>
+
+        <button type="button" [routerLink]="['/daily-mission', dailyMissionRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editar</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

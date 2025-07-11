@@ -1,0 +1,15 @@
+export enum GoalCategory {
+  ADVENTURE = 'ADVENTURE',
+
+  SHIELD = 'SHIELD',
+
+  UPGRADE = 'UPGRADE',
+
+  POTION = 'POTION',
+
+  TREASURE = 'TREASURE',
+
+  EQUIPMENT = 'EQUIPMENT',
+
+  OTHER = 'OTHER',
+}

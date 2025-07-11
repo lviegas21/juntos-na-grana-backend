@@ -1,0 +1,161 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-app-user-heading"
+        data-cy="AppUserCreateUpdateHeading"
+        jhiTranslate="juntosnaGranaApplicationApp.appUser.home.createOrEditLabel"
+      >
+        Criar ou editar App User
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="juntosnaGranaApplicationApp.appUser.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let usernameRef = editForm.get('username')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_username" jhiTranslate="juntosnaGranaApplicationApp.appUser.username">Username</label>
+          <input type="text" class="form-control" name="username" id="field_username" data-cy="username" formControlName="username" />
+          @if (usernameRef.invalid && (usernameRef.dirty || usernameRef.touched)) {
+            <div>
+              @if (editForm.get('username')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">O campo é obrigatório.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let nameRef = editForm.get('name')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_name" jhiTranslate="juntosnaGranaApplicationApp.appUser.name">Name</label>
+          <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
+          @if (nameRef.invalid && (nameRef.dirty || nameRef.touched)) {
+            <div>
+              @if (editForm.get('name')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">O campo é obrigatório.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_avatar" jhiTranslate="juntosnaGranaApplicationApp.appUser.avatar">Avatar</label>
+          <input type="text" class="form-control" name="avatar" id="field_avatar" data-cy="avatar" formControlName="avatar" />
+        </div>
+
+        @let xpPointsRef = editForm.get('xpPoints')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_xpPoints" jhiTranslate="juntosnaGranaApplicationApp.appUser.xpPoints">Xp Points</label>
+          <input type="number" class="form-control" name="xpPoints" id="field_xpPoints" data-cy="xpPoints" formControlName="xpPoints" />
+          @if (xpPointsRef.invalid && (xpPointsRef.dirty || xpPointsRef.touched)) {
+            <div>
+              @if (editForm.get('xpPoints')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">O campo é obrigatório.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('xpPoints')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >Este campo é do tipo numérico.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let levelRef = editForm.get('level')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_level" jhiTranslate="juntosnaGranaApplicationApp.appUser.level">Level</label>
+          <input type="number" class="form-control" name="level" id="field_level" data-cy="level" formControlName="level" />
+          @if (levelRef.invalid && (levelRef.dirty || levelRef.touched)) {
+            <div>
+              @if (editForm.get('level')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">O campo é obrigatório.</small>
+              }
+              <small class="form-text text-danger" [hidden]="!editForm.get('level')?.errors?.number" jhiTranslate="entity.validation.number"
+                >Este campo é do tipo numérico.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let createdAtRef = editForm.get('createdAt')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_createdAt" jhiTranslate="juntosnaGranaApplicationApp.appUser.createdAt">Created At</label>
+          <div class="d-flex">
+            <input
+              id="field_createdAt"
+              data-cy="createdAt"
+              type="datetime-local"
+              class="form-control"
+              name="createdAt"
+              formControlName="createdAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          @if (createdAtRef.invalid && (createdAtRef.dirty || createdAtRef.touched)) {
+            <div>
+              @if (editForm.get('createdAt')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">O campo é obrigatório.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('createdAt')?.errors?.datetimelocal"
+                jhiTranslate="entity.validation.datetimelocal"
+                >Este campo é do tipo data/hora.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_family" jhiTranslate="juntosnaGranaApplicationApp.appUser.family">Family</label>
+          <select
+            class="form-control"
+            id="field_family"
+            data-cy="family"
+            name="family"
+            formControlName="family"
+            [compareWith]="compareFamily"
+          >
+            @if (editForm.get(['family'])!.value === null) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (familyOption of familiesSharedCollection; track $index) {
+              <option [ngValue]="familyOption">{{ familyOption.id }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['family'])!.invalid && (editForm.get(['family'])!.dirty || editForm.get(['family'])!.touched)) {
+          <div>
+            @if (editForm.get(['family'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">O campo é obrigatório.</small>
+            }
+          </div>
+        }
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancelar</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Salvar</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

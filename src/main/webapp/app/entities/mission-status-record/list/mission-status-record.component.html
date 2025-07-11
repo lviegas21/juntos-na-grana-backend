@@ -1,0 +1,115 @@
+<div>
+  <h2 id="page-heading" data-cy="MissionStatusRecordHeading">
+    <span jhiTranslate="juntosnaGranaApplicationApp.missionStatusRecord.home.title">Mission Status Records</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="juntosnaGranaApplicationApp.missionStatusRecord.home.refreshListLabel">Atualizar lista</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-mission-status-record"
+        [routerLink]="['/mission-status-record/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="juntosnaGranaApplicationApp.missionStatusRecord.home.createLabel">Criar novo Mission Status Record</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (missionStatusRecords().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="juntosnaGranaApplicationApp.missionStatusRecord.home.notFound">Nenhum Mission Status Record encontrado</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">Código</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="date">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.missionStatusRecord.date">Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="statusType">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.missionStatusRecord.statusType">Status Type</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="mission.id">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.missionStatusRecord.mission">Mission</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (missionStatusRecord of missionStatusRecords(); track trackId(missionStatusRecord)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/mission-status-record', missionStatusRecord.id, 'view']">{{ missionStatusRecord.id }}</a>
+              </td>
+              <td>{{ missionStatusRecord.date | formatMediumDatetime }}</td>
+              <td [jhiTranslate]="'juntosnaGranaApplicationApp.MissionStatusType.' + (missionStatusRecord.statusType ?? 'null')">
+                {{ { null: '', PENDING: 'PENDING', COMPLETED: 'COMPLETED', FAILED: 'FAILED' }[missionStatusRecord.statusType ?? 'null'] }}
+              </td>
+              <td>
+                @if (missionStatusRecord.mission) {
+                  <div>
+                    <a [routerLink]="['/daily-mission', missionStatusRecord.mission.id, 'view']">{{ missionStatusRecord.mission.id }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/mission-status-record', missionStatusRecord.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Visualizar</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/mission-status-record', missionStatusRecord.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editar</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(missionStatusRecord)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Excluir</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

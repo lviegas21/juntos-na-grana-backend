@@ -1,0 +1,10 @@
+{
+  "juntosnaGranaApplicationApp": {
+    "GoalPriority": {
+      "null": "",
+      "LOW": "LOW",
+      "MEDIUM": "MEDIUM",
+      "HIGH": "HIGH"
+    }
+  }
+}

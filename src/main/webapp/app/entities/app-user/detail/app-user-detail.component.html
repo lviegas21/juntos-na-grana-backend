@@ -1,0 +1,62 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (appUser(); as appUserRef) {
+      <div>
+        <h2 data-cy="appUserDetailsHeading"><span jhiTranslate="juntosnaGranaApplicationApp.appUser.detail.title">App User</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">Código</span></dt>
+          <dd>
+            <span>{{ appUserRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.appUser.username">Username</span></dt>
+          <dd>
+            <span>{{ appUserRef.username }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.appUser.name">Name</span></dt>
+          <dd>
+            <span>{{ appUserRef.name }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.appUser.avatar">Avatar</span></dt>
+          <dd>
+            <span>{{ appUserRef.avatar }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.appUser.xpPoints">Xp Points</span></dt>
+          <dd>
+            <span>{{ appUserRef.xpPoints }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.appUser.level">Level</span></dt>
+          <dd>
+            <span>{{ appUserRef.level }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.appUser.createdAt">Created At</span></dt>
+          <dd>
+            <span>{{ appUserRef.createdAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.appUser.family">Family</span></dt>
+          <dd>
+            @if (appUser()!.family) {
+              <div>
+                <a [routerLink]="['/family', appUser()!.family?.id, 'view']">{{ appUserRef.family?.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Voltar</span>
+        </button>
+
+        <button type="button" [routerLink]="['/app-user', appUserRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editar</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>
