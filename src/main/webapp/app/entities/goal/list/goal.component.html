@@ -1,0 +1,184 @@
+<div>
+  <h2 id="page-heading" data-cy="GoalHeading">
+    <span jhiTranslate="juntosnaGranaApplicationApp.goal.home.title">Goals</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="juntosnaGranaApplicationApp.goal.home.refreshListLabel">Atualizar lista</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-goal"
+        [routerLink]="['/goal/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="juntosnaGranaApplicationApp.goal.home.createLabel">Criar novo Goal</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (goals().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="juntosnaGranaApplicationApp.goal.home.notFound">Nenhum Goal encontrado</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">Código</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="title">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.goal.title">Title</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="description">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.goal.description">Description</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="targetAmount">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.goal.targetAmount">Target Amount</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="currentAmount">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.goal.currentAmount">Current Amount</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="createdAt">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.goal.createdAt">Created At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dueDate">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.goal.dueDate">Due Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="category">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.goal.category">Category</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="priority">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.goal.priority">Priority</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="alertEnabled">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.goal.alertEnabled">Alert Enabled</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="alertThreshold">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.goal.alertThreshold">Alert Threshold</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="family.id">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.goal.family">Family</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (goal of goals(); track trackId(goal)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/goal', goal.id, 'view']">{{ goal.id }}</a>
+              </td>
+              <td>{{ goal.title }}</td>
+              <td>{{ goal.description }}</td>
+              <td>{{ goal.targetAmount }}</td>
+              <td>{{ goal.currentAmount }}</td>
+              <td>{{ goal.createdAt | formatMediumDatetime }}</td>
+              <td>{{ goal.dueDate | formatMediumDatetime }}</td>
+              <td [jhiTranslate]="'juntosnaGranaApplicationApp.GoalCategory.' + (goal.category ?? 'null')">
+                {{
+                  {
+                    null: '',
+                    ADVENTURE: 'ADVENTURE',
+                    SHIELD: 'SHIELD',
+                    UPGRADE: 'UPGRADE',
+                    POTION: 'POTION',
+                    TREASURE: 'TREASURE',
+                    EQUIPMENT: 'EQUIPMENT',
+                    OTHER: 'OTHER',
+                  }[goal.category ?? 'null']
+                }}
+              </td>
+              <td [jhiTranslate]="'juntosnaGranaApplicationApp.GoalPriority.' + (goal.priority ?? 'null')">
+                {{ { null: '', LOW: 'LOW', MEDIUM: 'MEDIUM', HIGH: 'HIGH' }[goal.priority ?? 'null'] }}
+              </td>
+              <td>{{ goal.alertEnabled }}</td>
+              <td>{{ goal.alertThreshold }}</td>
+              <td>
+                @if (goal.family) {
+                  <div>
+                    <a [routerLink]="['/family', goal.family.id, 'view']">{{ goal.family.id }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/goal', goal.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Visualizar</span>
+                  </a>
+
+                  <a [routerLink]="['/goal', goal.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editar</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(goal)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Excluir</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

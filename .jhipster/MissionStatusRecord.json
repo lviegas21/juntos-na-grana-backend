@@ -1,0 +1,31 @@
+{
+  "annotations": {
+    "changelogDate": "20250711140058"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "date",
+      "fieldType": "ZonedDateTime",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "statusType",
+      "fieldType": "MissionStatusType",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "PENDING,COMPLETED,FAILED"
+    }
+  ],
+  "name": "MissionStatusRecord",
+  "relationships": [
+    {
+      "otherEntityName": "dailyMission",
+      "otherEntityRelationshipName": "statusRecords",
+      "relationshipName": "mission",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no"
+}

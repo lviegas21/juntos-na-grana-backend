@@ -1,0 +1,26 @@
+{
+  "juntosnaGranaApplicationApp": {
+    "family": {
+      "home": {
+        "title": "Families",
+        "refreshListLabel": "Atualizar lista",
+        "createLabel": "Criar novo Family",
+        "createOrEditLabel": "Criar ou editar Family",
+        "notFound": "Nenhum Family encontrado"
+      },
+      "created": "Um novo Family foi criado com o identificador {{ param }}",
+      "updated": "Um Family foi atualizado com o identificador {{ param }}",
+      "deleted": "Um Family foi excluído com o identificador {{ param }}",
+      "delete": {
+        "question": "Tem certeza de que deseja excluir Family {{ id }}?"
+      },
+      "detail": {
+        "title": "Family"
+      },
+      "id": "ID",
+      "name": "Name",
+      "createdAt": "Created At",
+      "members": "Members"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "juntosnaGranaApplicationApp": {
+    "wallet": {
+      "home": {
+        "title": "Wallets",
+        "refreshListLabel": "Atualizar lista",
+        "createLabel": "Criar novo Wallet",
+        "createOrEditLabel": "Criar ou editar Wallet",
+        "notFound": "Nenhum Wallet encontrado"
+      },
+      "created": "Um novo Wallet foi criado com o identificador {{ param }}",
+      "updated": "Um Wallet foi atualizado com o identificador {{ param }}",
+      "deleted": "Um Wallet foi excluído com o identificador {{ param }}",
+      "delete": {
+        "question": "Tem certeza de que deseja excluir Wallet {{ id }}?"
+      },
+      "detail": {
+        "title": "Wallet"
+      },
+      "id": "ID",
+      "name": "Name",
+      "balance": "Balance",
+      "type": "Type",
+      "icon": "Icon",
+      "color": "Color",
+      "description": "Description",
+      "createdAt": "Created At",
+      "owner": "Owner"
+    }
+  }
+}

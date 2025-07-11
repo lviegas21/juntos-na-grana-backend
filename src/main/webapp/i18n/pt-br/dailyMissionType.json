@@ -1,0 +1,11 @@
+{
+  "juntosnaGranaApplicationApp": {
+    "DailyMissionType": {
+      "null": "",
+      "SAVING": "SAVING",
+      "RESTRICTION": "RESTRICTION",
+      "TRACKING": "TRACKING",
+      "INVESTMENT": "INVESTMENT"
+    }
+  }
+}

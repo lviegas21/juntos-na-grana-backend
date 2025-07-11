@@ -1,0 +1,34 @@
+{
+  "juntosnaGranaApplicationApp": {
+    "dailyMission": {
+      "home": {
+        "title": "Daily Missions",
+        "refreshListLabel": "Atualizar lista",
+        "createLabel": "Criar novo Daily Mission",
+        "createOrEditLabel": "Criar ou editar Daily Mission",
+        "notFound": "Nenhum Daily Mission encontrado"
+      },
+      "created": "Um novo Daily Mission foi criado com o identificador {{ param }}",
+      "updated": "Um Daily Mission foi atualizado com o identificador {{ param }}",
+      "deleted": "Um Daily Mission foi excluído com o identificador {{ param }}",
+      "delete": {
+        "question": "Tem certeza de que deseja excluir Daily Mission {{ id }}?"
+      },
+      "detail": {
+        "title": "Daily Mission"
+      },
+      "id": "ID",
+      "title": "Title",
+      "description": "Description",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "type": "Type",
+      "targetAmount": "Target Amount",
+      "category": "Category",
+      "xpReward": "Xp Reward",
+      "createdAt": "Created At",
+      "statusRecords": "Status Records",
+      "family": "Family"
+    }
+  }
+}

@@ -1,0 +1,180 @@
+<div>
+  <h2 id="page-heading" data-cy="DailyMissionHeading">
+    <span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.home.title">Daily Missions</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.home.refreshListLabel">Atualizar lista</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-daily-mission"
+        [routerLink]="['/daily-mission/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.home.createLabel">Criar novo Daily Mission</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (dailyMissions().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.home.notFound">Nenhum Daily Mission encontrado</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">Código</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="title">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.title">Title</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="description">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.description">Description</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="startDate">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.startDate">Start Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="endDate">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.endDate">End Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="type">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.type">Type</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="targetAmount">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.targetAmount">Target Amount</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="category">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.category">Category</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="xpReward">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.xpReward">Xp Reward</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="createdAt">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.createdAt">Created At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="family.id">
+              <div class="d-flex">
+                <span jhiTranslate="juntosnaGranaApplicationApp.dailyMission.family">Family</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (dailyMission of dailyMissions(); track trackId(dailyMission)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/daily-mission', dailyMission.id, 'view']">{{ dailyMission.id }}</a>
+              </td>
+              <td>{{ dailyMission.title }}</td>
+              <td>{{ dailyMission.description }}</td>
+              <td>{{ dailyMission.startDate | formatMediumDatetime }}</td>
+              <td>{{ dailyMission.endDate | formatMediumDatetime }}</td>
+              <td [jhiTranslate]="'juntosnaGranaApplicationApp.DailyMissionType.' + (dailyMission.type ?? 'null')">
+                {{
+                  { null: '', SAVING: 'SAVING', RESTRICTION: 'RESTRICTION', TRACKING: 'TRACKING', INVESTMENT: 'INVESTMENT' }[
+                    dailyMission.type ?? 'null'
+                  ]
+                }}
+              </td>
+              <td>{{ dailyMission.targetAmount }}</td>
+              <td [jhiTranslate]="'juntosnaGranaApplicationApp.GoalCategory.' + (dailyMission.category ?? 'null')">
+                {{
+                  {
+                    null: '',
+                    ADVENTURE: 'ADVENTURE',
+                    SHIELD: 'SHIELD',
+                    UPGRADE: 'UPGRADE',
+                    POTION: 'POTION',
+                    TREASURE: 'TREASURE',
+                    EQUIPMENT: 'EQUIPMENT',
+                    OTHER: 'OTHER',
+                  }[dailyMission.category ?? 'null']
+                }}
+              </td>
+              <td>{{ dailyMission.xpReward }}</td>
+              <td>{{ dailyMission.createdAt | formatMediumDatetime }}</td>
+              <td>
+                @if (dailyMission.family) {
+                  <div>
+                    <a [routerLink]="['/family', dailyMission.family.id, 'view']">{{ dailyMission.family.id }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/daily-mission', dailyMission.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Visualizar</span>
+                  </a>
+
+                  <a [routerLink]="['/daily-mission', dailyMission.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editar</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(dailyMission)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Excluir</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

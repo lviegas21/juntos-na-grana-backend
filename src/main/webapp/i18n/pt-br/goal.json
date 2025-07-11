@@ -1,0 +1,34 @@
+{
+  "juntosnaGranaApplicationApp": {
+    "goal": {
+      "home": {
+        "title": "Goals",
+        "refreshListLabel": "Atualizar lista",
+        "createLabel": "Criar novo Goal",
+        "createOrEditLabel": "Criar ou editar Goal",
+        "notFound": "Nenhum Goal encontrado"
+      },
+      "created": "Um novo Goal foi criado com o identificador {{ param }}",
+      "updated": "Um Goal foi atualizado com o identificador {{ param }}",
+      "deleted": "Um Goal foi excluído com o identificador {{ param }}",
+      "delete": {
+        "question": "Tem certeza de que deseja excluir Goal {{ id }}?"
+      },
+      "detail": {
+        "title": "Goal"
+      },
+      "id": "ID",
+      "title": "Title",
+      "description": "Description",
+      "targetAmount": "Target Amount",
+      "currentAmount": "Current Amount",
+      "createdAt": "Created At",
+      "dueDate": "Due Date",
+      "category": "Category",
+      "priority": "Priority",
+      "alertEnabled": "Alert Enabled",
+      "alertThreshold": "Alert Threshold",
+      "family": "Family"
+    }
+  }
+}

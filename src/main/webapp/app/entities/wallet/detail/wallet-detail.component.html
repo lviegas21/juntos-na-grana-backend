@@ -1,0 +1,68 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (wallet(); as walletRef) {
+      <div>
+        <h2 data-cy="walletDetailsHeading"><span jhiTranslate="juntosnaGranaApplicationApp.wallet.detail.title">Wallet</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">Código</span></dt>
+          <dd>
+            <span>{{ walletRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.wallet.name">Name</span></dt>
+          <dd>
+            <span>{{ walletRef.name }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.wallet.balance">Balance</span></dt>
+          <dd>
+            <span>{{ walletRef.balance }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.wallet.type">Type</span></dt>
+          <dd>
+            <span [jhiTranslate]="'juntosnaGranaApplicationApp.WalletType.' + (walletRef.type ?? 'null')">{{
+              { null: '', PERSONAL: 'PERSONAL', SHARED: 'SHARED', SAVINGS: 'SAVINGS', INVESTMENT: 'INVESTMENT' }[walletRef.type ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.wallet.icon">Icon</span></dt>
+          <dd>
+            <span>{{ walletRef.icon }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.wallet.color">Color</span></dt>
+          <dd>
+            <span>{{ walletRef.color }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.wallet.description">Description</span></dt>
+          <dd>
+            <span>{{ walletRef.description }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.wallet.createdAt">Created At</span></dt>
+          <dd>
+            <span>{{ walletRef.createdAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.wallet.owner">Owner</span></dt>
+          <dd>
+            @if (wallet()!.owner) {
+              <div>
+                <a [routerLink]="['/app-user', wallet()!.owner?.id, 'view']">{{ walletRef.owner?.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Voltar</span>
+        </button>
+
+        <button type="button" [routerLink]="['/wallet', walletRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editar</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

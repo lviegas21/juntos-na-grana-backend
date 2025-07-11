@@ -1,0 +1,9 @@
+export enum DailyMissionType {
+  SAVING = 'SAVING',
+
+  RESTRICTION = 'RESTRICTION',
+
+  TRACKING = 'TRACKING',
+
+  INVESTMENT = 'INVESTMENT',
+}

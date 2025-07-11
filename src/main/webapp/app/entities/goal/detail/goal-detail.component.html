@@ -1,0 +1,91 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (goal(); as goalRef) {
+      <div>
+        <h2 data-cy="goalDetailsHeading"><span jhiTranslate="juntosnaGranaApplicationApp.goal.detail.title">Goal</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">Código</span></dt>
+          <dd>
+            <span>{{ goalRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.goal.title">Title</span></dt>
+          <dd>
+            <span>{{ goalRef.title }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.goal.description">Description</span></dt>
+          <dd>
+            <span>{{ goalRef.description }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.goal.targetAmount">Target Amount</span></dt>
+          <dd>
+            <span>{{ goalRef.targetAmount }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.goal.currentAmount">Current Amount</span></dt>
+          <dd>
+            <span>{{ goalRef.currentAmount }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.goal.createdAt">Created At</span></dt>
+          <dd>
+            <span>{{ goalRef.createdAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.goal.dueDate">Due Date</span></dt>
+          <dd>
+            <span>{{ goalRef.dueDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.goal.category">Category</span></dt>
+          <dd>
+            <span [jhiTranslate]="'juntosnaGranaApplicationApp.GoalCategory.' + (goalRef.category ?? 'null')">{{
+              {
+                null: '',
+                ADVENTURE: 'ADVENTURE',
+                SHIELD: 'SHIELD',
+                UPGRADE: 'UPGRADE',
+                POTION: 'POTION',
+                TREASURE: 'TREASURE',
+                EQUIPMENT: 'EQUIPMENT',
+                OTHER: 'OTHER',
+              }[goalRef.category ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.goal.priority">Priority</span></dt>
+          <dd>
+            <span [jhiTranslate]="'juntosnaGranaApplicationApp.GoalPriority.' + (goalRef.priority ?? 'null')">{{
+              { null: '', LOW: 'LOW', MEDIUM: 'MEDIUM', HIGH: 'HIGH' }[goalRef.priority ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.goal.alertEnabled">Alert Enabled</span></dt>
+          <dd>
+            <span>{{ goalRef.alertEnabled }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.goal.alertThreshold">Alert Threshold</span></dt>
+          <dd>
+            <span>{{ goalRef.alertThreshold }}</span>
+          </dd>
+          <dt><span jhiTranslate="juntosnaGranaApplicationApp.goal.family">Family</span></dt>
+          <dd>
+            @if (goal()!.family) {
+              <div>
+                <a [routerLink]="['/family', goal()!.family?.id, 'view']">{{ goalRef.family?.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Voltar</span>
+        </button>
+
+        <button type="button" [routerLink]="['/goal', goalRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editar</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

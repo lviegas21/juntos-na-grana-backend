@@ -1,0 +1,70 @@
+{
+  "annotations": {
+    "changelogDate": "20250711140057"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "title",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "startDate",
+      "fieldType": "ZonedDateTime",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "endDate",
+      "fieldType": "ZonedDateTime",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "type",
+      "fieldType": "DailyMissionType",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "SAVING,RESTRICTION,TRACKING,INVESTMENT"
+    },
+    {
+      "fieldName": "targetAmount",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "category",
+      "fieldType": "GoalCategory",
+      "fieldValues": "ADVENTURE,SHIELD,UPGRADE,POTION,TREASURE,EQUIPMENT,OTHER"
+    },
+    {
+      "fieldName": "xpReward",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "ZonedDateTime",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "DailyMission",
+  "relationships": [
+    {
+      "otherEntityName": "missionStatusRecord",
+      "otherEntityRelationshipName": "mission",
+      "relationshipName": "statusRecords",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "family",
+      "relationshipName": "family",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no"
+}

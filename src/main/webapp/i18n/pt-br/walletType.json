@@ -1,0 +1,11 @@
+{
+  "juntosnaGranaApplicationApp": {
+    "WalletType": {
+      "null": "",
+      "PERSONAL": "PERSONAL",
+      "SHARED": "SHARED",
+      "SAVINGS": "SAVINGS",
+      "INVESTMENT": "INVESTMENT"
+    }
+  }
+}
