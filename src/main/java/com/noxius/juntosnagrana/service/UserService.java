@@ -1,15 +1,20 @@
 package com.noxius.juntosnagrana.service;
 
 import com.noxius.juntosnagrana.config.Constants;
+import com.noxius.juntosnagrana.domain.AppUser;
 import com.noxius.juntosnagrana.domain.Authority;
+import com.noxius.juntosnagrana.domain.Family;
 import com.noxius.juntosnagrana.domain.User;
+import com.noxius.juntosnagrana.repository.AppUserRepository;
 import com.noxius.juntosnagrana.repository.AuthorityRepository;
+import com.noxius.juntosnagrana.repository.FamilyRepository;
 import com.noxius.juntosnagrana.repository.UserRepository;
 import com.noxius.juntosnagrana.security.AuthoritiesConstants;
 import com.noxius.juntosnagrana.security.SecurityUtils;
 import com.noxius.juntosnagrana.service.dto.AdminUserDTO;
 import com.noxius.juntosnagrana.service.dto.UserDTO;
 import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -40,17 +45,25 @@ public class UserService {
     private final AuthorityRepository authorityRepository;
 
     private final CacheManager cacheManager;
+    
+    private final AppUserRepository appUserRepository;
+    
+    private final FamilyRepository familyRepository;
 
     public UserService(
         UserRepository userRepository,
         PasswordEncoder passwordEncoder,
         AuthorityRepository authorityRepository,
-        CacheManager cacheManager
+        CacheManager cacheManager,
+        AppUserRepository appUserRepository,
+        FamilyRepository familyRepository
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
+        this.appUserRepository = appUserRepository;
+        this.familyRepository = familyRepository;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -132,6 +145,10 @@ public class UserService {
         userRepository.save(newUser);
         this.clearUserCaches(newUser);
         LOG.debug("Created Information for User: {}", newUser);
+        
+        // Create AppUser and associate with a Family
+        createAppUserForNewUser(newUser);
+        
         return newUser;
     }
 
@@ -177,6 +194,10 @@ public class UserService {
         userRepository.save(user);
         this.clearUserCaches(user);
         LOG.debug("Created Information for User: {}", user);
+        
+        // Create AppUser and associate with a Family
+        createAppUserForNewUser(user);
+        
         return user;
     }
 
@@ -320,5 +341,64 @@ public class UserService {
         if (user.getEmail() != null) {
             Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evictIfPresent(user.getEmail());
         }
+    }
+    
+    /**
+     * Create an AppUser entity for a newly registered User.
+     * This links the standard JHipster User with the application-specific AppUser.
+     * Also creates or finds a default Family for the user.
+     *
+     * @param user the newly created User entity
+     * @return the created AppUser entity
+     */
+    private AppUser createAppUserForNewUser(User user) {
+        LOG.debug("Creating AppUser for User: {}", user.getLogin());
+        
+        // Check if AppUser already exists for this username
+        Optional<AppUser> existingAppUser = appUserRepository.findByUsername(user.getLogin());
+        if (existingAppUser.isPresent()) {
+            LOG.debug("AppUser already exists for User: {}", user.getLogin());
+            return existingAppUser.get();
+        }
+        
+        // Find or create a default family
+        Family family = findOrCreateDefaultFamily();
+        
+        // Create the AppUser
+        AppUser appUser = new AppUser();
+        appUser.setUsername(user.getLogin());
+        appUser.setName(user.getFirstName() + " " + user.getLastName());
+        appUser.setXpPoints(0);
+        appUser.setLevel(1);
+        appUser.setCreatedAt(ZonedDateTime.now());
+        appUser.setFamily(family);
+        
+        // Save the AppUser
+        AppUser savedAppUser = appUserRepository.save(appUser);
+        LOG.debug("Created AppUser: {}", savedAppUser);
+        
+        return savedAppUser;
+    }
+    
+    /**
+     * Find the default family or create one if it doesn't exist.
+     * 
+     * @return the default Family entity
+     */
+    private Family findOrCreateDefaultFamily() {
+        // Try to find a default family (we'll use the first one found)
+        List<Family> families = familyRepository.findAll();
+        if (!families.isEmpty()) {
+            return families.get(0);
+        }
+        
+        // Create a default family if none exists
+        Family defaultFamily = new Family();
+        defaultFamily.setName("Default Family");
+        defaultFamily.setCreatedAt(ZonedDateTime.now());
+        Family savedFamily = familyRepository.save(defaultFamily);
+        LOG.debug("Created default Family: {}", savedFamily);
+        
+        return savedFamily;
     }
 }

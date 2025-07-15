@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="20250715-1" author="cascade">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="transaction"/>
+            </not>
+        </preConditions>
+        
+        <createTable tableName="transaction">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="amount" type="double">
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="transaction_date" type="timestamp"/>
+            <column name="type" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="category" type="varchar(255)"/>
+            <column name="notes" type="varchar(255)"/>
+            <column name="wallet_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        
+        <createSequence sequenceName="sequence_generator" startValue="1000" incrementBy="50"/>
+    </changeSet>
+
+    <changeSet id="20250715-2" author="cascade">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="transaction"/>
+            <not>
+                <indexExists indexName="idx_transaction_wallet_id"/>
+            </not>
+        </preConditions>
+        
+        <createIndex indexName="idx_transaction_wallet_id" tableName="transaction">
+            <column name="wallet_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="20250715-3" author="cascade">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="transaction"/>
+            <tableExists tableName="wallet"/>
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_transaction_wallet_id"/>
+            </not>
+        </preConditions>
+        
+        <addForeignKeyConstraint baseColumnNames="wallet_id"
+                                 baseTableName="transaction"
+                                 constraintName="fk_transaction_wallet_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="wallet"/>
+    </changeSet>
+</databaseChangeLog>

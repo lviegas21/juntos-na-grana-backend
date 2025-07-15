@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="20250715-1" author="cascade">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="wallet_share"/>
+            </not>
+        </preConditions>
+        <createTable tableName="wallet_share">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false" />
+            </column>
+            <column name="wallet_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_wallet_share_wallet_id" references="wallet(id)" />
+            </column>
+            <column name="shared_with_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_wallet_share_shared_with_id" references="app_user(id)" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20250715-2" author="cascade">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="wallet_share"/>
+            <not>
+                <indexExists indexName="idx_wallet_share_wallet_id"/>
+            </not>
+        </preConditions>
+        <createIndex indexName="idx_wallet_share_wallet_id" tableName="wallet_share">
+            <column name="wallet_id" />
+        </createIndex>
+    </changeSet>
+    
+    <changeSet id="20250715-3" author="cascade">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="wallet_share"/>
+            <not>
+                <indexExists indexName="idx_wallet_share_shared_with_id"/>
+            </not>
+        </preConditions>
+        <createIndex indexName="idx_wallet_share_shared_with_id" tableName="wallet_share">
+            <column name="shared_with_id" />
+        </createIndex>
+    </changeSet>
+    
+    <changeSet id="20250715-4" author="cascade">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="wallet_share"/>
+            <not>
+                <indexExists indexName="idx_wallet_share_unique"/>
+            </not>
+        </preConditions>
+        <createIndex indexName="idx_wallet_share_unique" tableName="wallet_share" unique="true">
+            <column name="wallet_id" />
+            <column name="shared_with_id" />
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

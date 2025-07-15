@@ -1,0 +1,49 @@
+{
+  "annotations": {
+    "changelogDate": "20250711140054"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "username",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique"]
+    },
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "avatar",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "xpPoints",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "level",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "ZonedDateTime",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "AppUser",
+  "relationships": [
+    {
+      "otherEntityName": "family",
+      "otherEntityRelationshipName": "members",
+      "relationshipName": "family",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no"
+}

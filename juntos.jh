@@ -1,0 +1,114 @@
+// Versão simplificada do JDL para o Juntos na Grana
+
+// Enumerações básicas
+enum GoalCategory {
+    ADVENTURE,
+    SHIELD,
+    UPGRADE,
+    POTION,
+    TREASURE,
+    EQUIPMENT,
+    OTHER
+}
+
+enum GoalPriority {
+    LOW,
+    MEDIUM,
+    HIGH
+}
+
+enum WalletType {
+    PERSONAL,
+    SHARED,
+    SAVINGS,
+    INVESTMENT
+}
+
+enum DailyMissionType {
+    SAVING,
+    RESTRICTION,
+    TRACKING,
+    INVESTMENT
+}
+
+enum MissionStatusType {
+    PENDING,
+    COMPLETED,
+    FAILED
+}
+
+// Entidades principais
+entity Family {
+    name String required,
+    createdAt ZonedDateTime required
+}
+
+entity AppUser {
+    username String required unique,
+    name String required,
+    avatar String,
+    xpPoints Integer required,
+    level Integer required,
+    createdAt ZonedDateTime required
+}
+
+entity Wallet {
+    name String required,
+    balance Double required,
+    type WalletType required,
+    icon String,
+    color String,
+    description String,
+    createdAt ZonedDateTime required
+}
+
+entity Goal {
+    title String required,
+    description String,
+    targetAmount Double required,
+    currentAmount Double required,
+    createdAt ZonedDateTime required,
+    dueDate ZonedDateTime,
+    category GoalCategory required,
+    priority GoalPriority required,
+    alertEnabled Boolean required,
+    alertThreshold Integer required
+}
+
+entity DailyMission {
+    title String required,
+    description String,
+    startDate ZonedDateTime required,
+    endDate ZonedDateTime required,
+    type DailyMissionType required,
+    targetAmount Double,
+    category GoalCategory,
+    xpReward Integer required,
+    createdAt ZonedDateTime required
+}
+
+entity MissionStatusRecord {
+    date ZonedDateTime required,
+    statusType MissionStatusType required
+}
+
+// Relacionamentos básicos
+relationship OneToMany {
+    Family{members} to AppUser{family required}
+}
+
+relationship ManyToOne {
+    Wallet{owner required} to AppUser
+}
+
+relationship ManyToOne {
+    Goal{family required} to Family
+}
+
+relationship ManyToOne {
+    DailyMission{family required} to Family
+}
+
+relationship OneToMany {
+    DailyMission{statusRecords} to MissionStatusRecord{mission required}
+}
