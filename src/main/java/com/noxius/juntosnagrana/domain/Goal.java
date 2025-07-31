@@ -67,10 +67,14 @@ public class Goal implements Serializable {
     @Column(name = "alert_threshold", nullable = false)
     private Integer alertThreshold;
 
-    @ManyToOne(optional = false)
-    @NotNull
+    @ManyToOne(optional = true)
     @JsonIgnoreProperties(value = { "members" }, allowSetters = true)
     private Family family;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    @JsonIgnoreProperties(value = { "family" }, allowSetters = true)
+    private AppUser user;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -228,6 +232,19 @@ public class Goal implements Serializable {
     public Goal family(Family family) {
         this.setFamily(family);
         return this;
+    }
+
+    public AppUser getUser() {
+        return this.user;
+    }
+
+    public Goal user(AppUser appUser) {
+        this.setUser(appUser);
+        return this;
+    }
+
+    public void setUser(AppUser appUser) {
+        this.user = appUser;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

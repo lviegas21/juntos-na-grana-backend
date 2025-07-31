@@ -58,8 +58,8 @@ class DailyMissionResourceIT {
     private static final Double DEFAULT_TARGET_AMOUNT = 1D;
     private static final Double UPDATED_TARGET_AMOUNT = 2D;
 
-    private static final GoalCategory DEFAULT_CATEGORY = GoalCategory.ADVENTURE;
-    private static final GoalCategory UPDATED_CATEGORY = GoalCategory.SHIELD;
+    private static final GoalCategory DEFAULT_CATEGORY = GoalCategory.OTHER;
+    private static final GoalCategory UPDATED_CATEGORY = GoalCategory.OTHER;
 
     private static final Integer DEFAULT_XP_REWARD = 1;
     private static final Integer UPDATED_XP_REWARD = 2;

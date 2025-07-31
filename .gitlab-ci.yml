@@ -1,0 +1,95 @@
+stages:
+  - build
+  - package
+  - deploy
+
+variables:
+  CI_REGISTRY: registry.ssp.ma.gov.br
+  CI_REGISTRY_IMAGE: $CI_REGISTRY/sgo/${CI_PROJECT_NAME}-${CI_COMMIT_REF_NAME}
+  TAG_LATEST: $CI_REGISTRY_IMAGE:latest
+  TAG_COMMIT: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  GIT_SSL_NO_VERIFY: "true"
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+  BRANCH: $CI_COMMIT_BRANCH
+  DEFAULT_TARGET: $CI_COMMIT_BRANCH
+
+
+
+maven-build:
+  image: maven:3.8.3-openjdk-17
+  variables:
+    MAVEN_OPTS: "-Dmaven.repo.local=${CI_PROJECT_DIR}/.repository/"
+  cache:
+    key: maven
+    paths: [.repository/]
+  tags:
+    - deploy
+  stage: build
+  script:
+    #- export
+    - echo $BRANCH
+    - cat ./src/main/resources/application.yml
+    - sed -i "s/^\(\s*active:\).*/\1 ${BRANCH}/" ./src/main/resources/application.yml
+    - cat ./src/main/resources/application.yml
+    - mvn package -B
+
+  artifacts:
+    paths:
+      - target/sgo-auth.jar
+docker-build:
+  image: docker:latest
+  stage: package
+  needs:
+    - maven-build
+  tags:
+    - deploy
+  services:
+    - name: docker:dind
+      command: ["--insecure-registry=registry.ssp.ma.gov.br"]
+  script:
+    #- export SPRING_ACTIVE_PROFILE=${CI_COMMIT_REF_NAME}
+    - docker build -t $TAG_COMMIT -t $TAG_LATEST .
+    - docker login -u $USER_REGISTRY -p $PASSWORD_REGISTRY $CI_REGISTRY
+    - docker push $TAG_COMMIT
+    - docker push $TAG_LATEST
+
+docker-deploy-job:
+  image: alpine:latest
+  stage: deploy
+  needs:
+    - docker-build
+  tags:
+    - deploy
+  script:
+    - echo "Starting  deployment..."
+
+    - TARGET=$(case "$DEPLOY_TARGET" in "" ) echo "$DEFAULT_TARGET" ;; * ) echo "$DEPLOY_TARGET" ;; esac)
+    # Should be equal to Gitlab Env variable or ENV PORT from Dockerfile
+    - PORT=$(case "$DEPLOY_PORT" in "" ) echo "8294" ;; * ) echo "$DEPLOY_PORT" ;; esac)
+
+    - echo "$PORT"
+
+    # Select machine configuration to run
+    # Default is set to 'lab' branch
+    - SERVER_IP=$(case "$TARGET" in master) echo "$SERVER_IP";; homologacao) echo "$SERVER_IP_HOMO";; desenvolvimento) echo "$SERVER_IP_DEV";; *) echo "$SERVER_IP_LAB";; esac)
+    - SERVER_USER=$(case "$TARGET" in master) echo "$SERVER_USER";; homologacao) echo "$SERVER_USER_HOMO";; desenvolvimento) echo "$SERVER_USER_DEV";; *) echo "$SERVER_USER_LAB";; esac)
+    - ID_RSA=$(case "$TARGET" in master) echo "$ID_RSA";; homologacao) echo "$ID_RSA_HOMO";; desenvolvimento) echo "$ID_RSA_DEV";; *) echo "$ID_RSA_LAB";; esac)
+    - EXPOSE_PORT=$(case "$TARGET" in master) echo "8294";; homologacao) echo "8294";; desenvolvimento) echo "8294";; *) echo "8294";;  esac)
+
+    - echo "Deploy em $CI_COMMIT_BRANCH..."
+    - echo "Deploying branch '$CI_COMMIT_BRANCH' to $SERVER_IP"
+
+    - chmod og= $ID_RSA
+    - apk update && apk add openssh-client
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u $USER_REGISTRY -p $PASSWORD_REGISTRY $CI_REGISTRY"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull $TAG_LATEST"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f ${CI_PROJECT_NAME}-${CI_COMMIT_REF_NAME} || true"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d --hostname ${SERVER_IP} -p $EXPOSE_PORT:$PORT --label io.portainer.accesscontrol.teams=${PORTAINER_TEAMS} --name ${CI_PROJECT_NAME}-${CI_COMMIT_REF_NAME} $TAG_LATEST"
+
+  only:
+    - master
+    - homologacao
+    - desenvolvimento
+    - lab

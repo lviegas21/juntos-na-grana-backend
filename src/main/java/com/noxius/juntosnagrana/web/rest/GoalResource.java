@@ -1,7 +1,12 @@
 package com.noxius.juntosnagrana.web.rest;
 
 import com.noxius.juntosnagrana.domain.Goal;
+import com.noxius.juntosnagrana.domain.Family;
 import com.noxius.juntosnagrana.repository.GoalRepository;
+import com.noxius.juntosnagrana.repository.FamilyRepository;
+import com.noxius.juntosnagrana.repository.AppUserRepository;
+import com.noxius.juntosnagrana.security.SecurityUtils;
+import com.noxius.juntosnagrana.service.dto.GoalDTO;
 import com.noxius.juntosnagrana.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -35,24 +40,44 @@ public class GoalResource {
     private String applicationName;
 
     private final GoalRepository goalRepository;
+    private final AppUserRepository appUserRepository;
+    private final FamilyRepository familyRepository;
 
-    public GoalResource(GoalRepository goalRepository) {
+    public GoalResource(GoalRepository goalRepository, AppUserRepository appUserRepository, FamilyRepository familyRepository) {
         this.goalRepository = goalRepository;
+        this.appUserRepository = appUserRepository;
+        this.familyRepository = familyRepository;
     }
 
     /**
      * {@code POST  /goals} : Create a new goal.
      *
-     * @param goal the goal to create.
+     * @param goalDTO o DTO da meta a ser criada.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new goal, or with status {@code 400 (Bad Request)} if the goal has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<Goal> createGoal(@Valid @RequestBody Goal goal) throws URISyntaxException {
-        LOG.debug("REST request to save Goal : {}", goal);
-        if (goal.getId() != null) {
+    public ResponseEntity<Goal> createGoal(@Valid @RequestBody GoalDTO goalDTO) throws URISyntaxException {
+        LOG.debug("REST request to save Goal : {}", goalDTO);
+        if (goalDTO.getId() != null) {
             throw new BadRequestAlertException("A new goal cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        
+        // Obter o usuário atual
+        String userLogin = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> 
+            new BadRequestAlertException("Usuário não autenticado", ENTITY_NAME, "usernotfound"));
+        
+        // Converter DTO para entidade
+        Goal goal = goalDTO.toEntity();
+        
+        // Definir o usuário atual como proprietário da meta
+        appUserRepository.findByUsername(userLogin).ifPresent(goal::setUser);
+        
+        // Associar família se o ID foi fornecido
+        if (goalDTO.getFamilyId() != null) {
+            familyRepository.findById(goalDTO.getFamilyId()).ifPresent(goal::setFamily);
+        }
+        
         goal = goalRepository.save(goal);
         return ResponseEntity.created(new URI("/api/goals/" + goal.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, goal.getId().toString()))
@@ -63,27 +88,44 @@ public class GoalResource {
      * {@code PUT  /goals/:id} : Updates an existing goal.
      *
      * @param id the id of the goal to save.
-     * @param goal the goal to update.
+     * @param goalDTO the goal DTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated goal,
      * or with status {@code 400 (Bad Request)} if the goal is not valid,
      * or with status {@code 500 (Internal Server Error)} if the goal couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Goal> updateGoal(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody Goal goal)
+    public ResponseEntity<Goal> updateGoal(@PathVariable(value = "id", required = false) final Long id, @Valid @RequestBody GoalDTO goalDTO)
         throws URISyntaxException {
-        LOG.debug("REST request to update Goal : {}, {}", id, goal);
-        if (goal.getId() == null) {
+        LOG.debug("REST request to update Goal : {}, {}", id, goalDTO);
+        if (goalDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, goal.getId())) {
+        if (!Objects.equals(id, goalDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
         if (!goalRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-
+        
+        // Buscar a meta existente para manter o usuário associado
+        Goal existingGoal = goalRepository.findById(id)
+            .orElseThrow(() -> new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
+        
+        // Converter DTO para entidade
+        Goal goal = goalDTO.toEntity();
+        
+        // Manter o usuário original
+        goal.setUser(existingGoal.getUser());
+        
+        // Associar família se o ID foi fornecido, caso contrário manter a família original
+        if (goalDTO.getFamilyId() != null) {
+            familyRepository.findById(goalDTO.getFamilyId()).ifPresent(goal::setFamily);
+        } else if (existingGoal.getFamily() != null) {
+            goal.setFamily(existingGoal.getFamily());
+        }
+        
         goal = goalRepository.save(goal);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, goal.getId().toString()))
@@ -94,7 +136,7 @@ public class GoalResource {
      * {@code PATCH  /goals/:id} : Partial updates given fields of an existing goal, field will ignore if it is null
      *
      * @param id the id of the goal to save.
-     * @param goal the goal to update.
+     * @param goalDTO the goal DTO with fields to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated goal,
      * or with status {@code 400 (Bad Request)} if the goal is not valid,
      * or with status {@code 404 (Not Found)} if the goal is not found,
@@ -104,13 +146,13 @@ public class GoalResource {
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<Goal> partialUpdateGoal(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody Goal goal
+        @NotNull @RequestBody GoalDTO goalDTO
     ) throws URISyntaxException {
-        LOG.debug("REST request to partial update Goal partially : {}, {}", id, goal);
-        if (goal.getId() == null) {
+        LOG.debug("REST request to partial update Goal partially : {}, {}", id, goalDTO);
+        if (goalDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, goal.getId())) {
+        if (!Objects.equals(id, goalDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -119,37 +161,42 @@ public class GoalResource {
         }
 
         Optional<Goal> result = goalRepository
-            .findById(goal.getId())
+            .findById(goalDTO.getId())
             .map(existingGoal -> {
-                if (goal.getTitle() != null) {
-                    existingGoal.setTitle(goal.getTitle());
+                if (goalDTO.getTitle() != null) {
+                    existingGoal.setTitle(goalDTO.getTitle());
                 }
-                if (goal.getDescription() != null) {
-                    existingGoal.setDescription(goal.getDescription());
+                if (goalDTO.getDescription() != null) {
+                    existingGoal.setDescription(goalDTO.getDescription());
                 }
-                if (goal.getTargetAmount() != null) {
-                    existingGoal.setTargetAmount(goal.getTargetAmount());
+                if (goalDTO.getTargetAmount() != null) {
+                    existingGoal.setTargetAmount(goalDTO.getTargetAmount());
                 }
-                if (goal.getCurrentAmount() != null) {
-                    existingGoal.setCurrentAmount(goal.getCurrentAmount());
+                if (goalDTO.getCurrentAmount() != null) {
+                    existingGoal.setCurrentAmount(goalDTO.getCurrentAmount());
                 }
-                if (goal.getCreatedAt() != null) {
-                    existingGoal.setCreatedAt(goal.getCreatedAt());
+                if (goalDTO.getCreatedAt() != null) {
+                    existingGoal.setCreatedAt(goalDTO.getCreatedAt());
                 }
-                if (goal.getDueDate() != null) {
-                    existingGoal.setDueDate(goal.getDueDate());
+                if (goalDTO.getDueDate() != null) {
+                    existingGoal.setDueDate(goalDTO.getDueDate());
                 }
-                if (goal.getCategory() != null) {
-                    existingGoal.setCategory(goal.getCategory());
+                if (goalDTO.getCategory() != null) {
+                    existingGoal.setCategory(goalDTO.getCategory());
                 }
-                if (goal.getPriority() != null) {
-                    existingGoal.setPriority(goal.getPriority());
+                if (goalDTO.getPriority() != null) {
+                    existingGoal.setPriority(goalDTO.getPriority());
                 }
-                if (goal.getAlertEnabled() != null) {
-                    existingGoal.setAlertEnabled(goal.getAlertEnabled());
+                if (goalDTO.getAlertEnabled() != null) {
+                    existingGoal.setAlertEnabled(goalDTO.getAlertEnabled());
                 }
-                if (goal.getAlertThreshold() != null) {
-                    existingGoal.setAlertThreshold(goal.getAlertThreshold());
+                if (goalDTO.getAlertThreshold() != null) {
+                    existingGoal.setAlertThreshold(goalDTO.getAlertThreshold());
+                }
+                
+                // Atualizar família se o ID foi fornecido
+                if (goalDTO.getFamilyId() != null) {
+                    familyRepository.findById(goalDTO.getFamilyId()).ifPresent(existingGoal::setFamily);
                 }
 
                 return existingGoal;
@@ -158,7 +205,7 @@ public class GoalResource {
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, goal.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, goalDTO.getId().toString())
         );
     }
 
@@ -169,8 +216,10 @@ public class GoalResource {
      */
     @GetMapping("")
     public List<Goal> getAllGoals() {
-        LOG.debug("REST request to get all Goals");
-        return goalRepository.findAll();
+        LOG.debug("REST request to get all Goals for current user");
+        String username = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> 
+            new BadRequestAlertException("Usuário não autenticado", ENTITY_NAME, "usernotfound"));
+        return goalRepository.findByUserUsername(username);
     }
 
     /**

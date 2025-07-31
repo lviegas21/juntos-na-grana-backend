@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="20250722-2" author="cascade">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="goal"/>
+            <not>
+                <columnExists tableName="goal" columnName="user_id"/>
+            </not>
+        </preConditions>
+        
+        <comment>Adiciona coluna user_id na tabela goal para associar metas a usuários (nullable inicialmente)</comment>
+        
+        <addColumn tableName="goal">
+            <column name="user_id" type="bigint">
+                <constraints nullable="true" 
+                             foreignKeyName="fk_goal__user_id"
+                             referencedTableName="app_user"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+        
+        <createIndex tableName="goal" indexName="idx_goal_user_id">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

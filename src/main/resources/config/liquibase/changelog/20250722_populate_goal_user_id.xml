@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!-- Primeiro, atualizar metas existentes com o primeiro usuário encontrado -->
+    <changeSet id="20250722-3" author="cascade">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="goal"/>
+            <columnExists tableName="goal" columnName="user_id"/>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM goal WHERE user_id IS NOT NULL
+            </sqlCheck>
+        </preConditions>
+        
+        <comment>Atualiza metas existentes com o primeiro usuário encontrado</comment>
+        
+        <sql>
+            UPDATE goal 
+            SET user_id = (SELECT MIN(id) FROM app_user)
+            WHERE user_id IS NULL
+        </sql>
+    </changeSet>
+    
+    <!-- Depois, tornar a coluna user_id NOT NULL -->
+    <changeSet id="20250722-4" author="cascade">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="goal"/>
+            <columnExists tableName="goal" columnName="user_id"/>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM goal WHERE user_id IS NULL
+            </sqlCheck>
+        </preConditions>
+        
+        <comment>Torna a coluna user_id obrigatória (NOT NULL)</comment>
+        
+        <addNotNullConstraint 
+            tableName="goal" 
+            columnName="user_id" 
+            columnDataType="bigint"/>
+    </changeSet>
+</databaseChangeLog>

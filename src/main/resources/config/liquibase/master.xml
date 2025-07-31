@@ -28,6 +28,9 @@
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20250715_added_entity_WalletShare.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20250715_added_entity_Transaction.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20250722_modify_goal_family_optional.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20250722_add_user_to_goal.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20250722_populate_goal_user_id.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20250711140054_added_entity_constraints_AppUser.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20250711140055_added_entity_constraints_Wallet.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20250711140056_added_entity_constraints_Goal.xml" relativeToChangelogFile="false"/>
